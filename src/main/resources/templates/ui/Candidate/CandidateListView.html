@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/navbar}">
+<body>
+
+<div layout:fragment="content">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item text-dark h3" aria-current="page">
+                <span class="border-bottom border-2 border-dark">
+                    Candidate list
+                </span>
+            </li>
+        </ol>
+    </nav>
+    <div class="d-flex justify-content-between align-items-center ">
+        <form class="col-6 d-flex flex-row" id="formSearch" action="">
+            <div class="position-relative d-flex align-items-center w-50 me-3">
+                <input placeholder="Search" name="nameKeyword"
+                       th:value="${candidateSearch.getNameKeyword()}"
+                       class="p-2 bg-body-secondary w-100 border-0 rounded"/>
+                <button type="submit" class="position-absolute border-0 bg-body-secondary h-75" style="right: 10px">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
+            <div class="position-relative d-flex align-items-center w-5 ">
+                <select class="p-2 bg-body-secondary w-100 border-0 rounded" name="status">
+                    <option th:selected="${candidateSearch.getStatus() == null}" th:value="${null}"> Status</option>
+                    <option th:selected="${candidateSearch.getStatus() != null && candidateSearch.getStatus().name() == 'OPEN'}"
+                            value="OPEN"> Open
+                    </option>
+                    <option> Waiting for interview</option>
+                    <option> In-progress</option>
+                    <option> Cancelled interview</option>
+                    <option> Passed Interview</option>
+                    <option> Failed interview</option>
+                    <option> Waiting for approval</option>
+                    <option> Approved offer</option>
+                    <option> Rejected offer</option>
+                    <option> Waiting for response</option>
+                    <option> Accepted offer</option>
+                    <option> Declined offer</option>
+                    <option> Cancelled offer</option>
+                    <option value="BANNED"> Banned</option>
+                </select>
+            </div>
+        </form>
+        <a th:href="@{/candidate/create}" class="text-decoration-none text-dark me-5">
+            <i class="fa-solid fa-plus h5 p-1 border border-2 border-dark rounded-circle "></i>
+        </a>
+    </div>
+    <div class="mt-3 bg-body-secondary table-responsive shadow rounded">
+        <span class="h6 m-2 py-2" th:utext="${candidates.getTotalElements() + 'rows'}"></span>
+        <table class="table table-hover table-success">
+            <thead>
+            <tr class="text-center">
+                <th class="">Name</th>
+                <th>Email</th>
+                <th>Phone No.</th>
+                <th>Position</th>
+                <th>Owner HR</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="table-light text-center" th:each="candidate : ${candidates}">
+                <td style="min-width: 150px" th:text="*{candidate.getFullName()}"></td>
+                <td style="min-width: 150px" th:text="*{candidate.getEmail()}"></td>
+                <td style="min-width: 150px" th:text="*{candidate.getPhoneNumber()}"></td>
+                <td style="min-width: 150px" th:text="*{candidate.getPosition()}"></td>
+                <td style="min-width: 150px"></td>
+                <td style="min-width: 150px" th:text="*{candidate.getStatus()}"></td>
+                <td class="text-center" style="min-width: 150px">
+                    <a th:href="@{/candidate/{id}(id=${candidate.id})}"
+                       class="text-decoration-none">
+                        <i class="fa-regular fa-eye"></i>
+                    </a>
+                    <a th:href="@{/candidate/edit/{id}(id=${candidate.id})}"
+                       class="text-decoration-none mx-3">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </a>
+                    <a th:onclick="'deleteById('+ ${candidate.id}+')'"
+                       role="button"
+                       data-bs-toggle="modal"
+                       data-bs-target="#deleteById"
+                       class="text-decoration-none">
+                        <i class="fa-regular fa-trash-can " id="candidate"></i>
+                    </a>
+                </td>
+            </tr>
+            <span th:if="${candidateSearch.getMessage() != null}" th:utext="${candidateSearch.getMessage()}"
+                  class="text-danger"></span>
+            </tbody>
+        </table>
+
+        <nav aria-label="Page navigation example"
+             th:if="${candidates.numberOfElements > 0}"
+             class="d-flex justify-content-center m-0 align-items-center">
+            <ul class="pagination d-flex align-items-center pt-2">
+                <li class="page-item">
+                    <a class="page-link"
+                       th:with="number=${candidateSearch.getPageNumber() > 1 ?
+                        candidateSearch.getPageNumber() - 1 : 1}"
+                       th:href="@{/candidate(
+                       pageNumber=${number},
+                       nameKeyword=${candidateSearch.getNameKeyword()},
+                       status=${candidateSearch.getStatus()}
+                       )}">Previous</a>
+                </li>
+                <li class="page-item" th:each="p,i : ${candidateSearch.getPageMaxNumbers()}">
+                    <a class="page-link"
+                       th:utext="${i.count}"
+                       th:classappend="${i.count == candidateSearch.getPageNumber() ? 'text-danger' : ''}"
+                       th:href="@{/candidate(
+                       pageNumber=${i.count},
+                       nameKeyword=${candidateSearch.getNameKeyword()},
+                       status=${candidateSearch.getStatus()}
+                       )}">
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link"
+                       th:with="number=${candidateSearch.getPageNumber() < candidateSearch.getPageMaxNumbers.size() ?
+                       candidateSearch.getPageNumber() + 1 : candidateSearch.getPageNumber()}"
+                       th:href="@{/candidate(
+                       pageNumber=${number},
+                       nameKeyword=${candidateSearch.getNameKeyword()},
+                       status=${candidateSearch.getStatus()}
+                       )}"
+                    >Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+</body>
+</html>

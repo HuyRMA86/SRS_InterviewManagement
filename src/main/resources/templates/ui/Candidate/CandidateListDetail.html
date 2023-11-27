@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/navbar}"
+>
+<body>
+
+<div layout:fragment="content">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item h3 me-2">
+                <a th:href="@{/candidate}" class="text-decoration-none border-bottom border-2 border-primary">
+                    Candidate List
+                </a>
+            </li>
+            <li class="breadcrumb-item text-dark h3 " aria-current="page">
+                <span class="border-bottom border-2 border-dark">
+                   Candidate Information
+                </span>
+            </li>
+        </ol>
+    </nav>
+    <div class="bg-body-secondary p-3 shadow rounded">
+        <div>
+                <h3>I. Personal information</h3>
+                <div class="d-flex  flex-lg-row flex-column ms-5 ">
+                    <div class="col-12 col-lg-6 me-3">
+                        <div class="d-flex flex-row align-items-center mt-4">
+                            <label class="w-25 h5 m-0">Full name</label>
+                            <span class="w-75 d-inline-block m-0" th:text="${candidate.fullName}"></span>
+                        </div>
+                        <div class="d-flex flex-row align-items-center mt-4">
+                            <label class="w-25 h5 m-0">D.O.B</label>
+                            <span class="w-75 d-inline-block m-0" th:utext="${candidate.dob}"></span>
+                        </div>
+                        <div class="d-flex flex-row align-items-center mt-4">
+                            <label class="w-25 h5 m-0">Phone number</label>
+                            <span class="w-75 d-inline-block m-0" th:utext=" ${candidate.phoneNumber}"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 me-3">
+                        <div class="d-flex flex-row align-items-center mt-4">
+                            <label class="w-25 h5 m-0">Email</label>
+                            <span class="w-75 d-inline-block m-0" th:utext="${candidate.email}"></span>
+                        </div>
+                        <div class="d-flex flex-row align-items-center mt-4">
+                            <label class="w-25 h5 m-0">Address</label>
+                            <span class="w-75 d-inline-block m-0" th:utext="${candidate.address}"></span>
+                        </div>
+                        <div class="d-flex flex-row align-items-center mt-4">
+                            <label class="w-25 h5 m-0">Gender</label>
+                            <span class="w-75 d-inline-block m-0" th:utext="${candidate.gender}"></span>
+                        </div>
+                    </div>
+                </div>
+                <h3 class="my-4">II. Professional information</h3>
+                <div class="d-flex  flex-lg-row flex-column ms-5">
+                    <div class="col-12 col-lg-6 me-3">
+                        <div class="d-flex flex-row align-items-center mt-4">
+                            <label class="w-25 h5 m-0">Cv attachment</label>
+                            <span class="w-75 d-inline-block m-0"> <a
+                                    th:href="@{/candidate/download/{id}(id=${candidate.id})}" th:utext="${candidate.cv}"></a></span>
+                        </div>
+                        <div class="d-flex flex-row align-items-center mt-4">
+                            <label class="w-25 h5 m-0">Position</label>
+                            <span class="w-75 d-inline-block m-0" th:utext="${candidate.position}"></span>
+                        </div>
+                        <div class="d-flex flex-row align-items-center mt-4">
+                            <label class="w-25 h5 m-0">Skill</label>
+                        <span class="d-inline-block m-0" th:each="s,i : ${candidate.getSkillCandidates()}"
+                              th:if="${i.count ==1}" th:utext="${s.skill.name}"></span>
+                        <span class="d-inline-block m-0"
+                              th:each="s,i : ${candidate.getSkillCandidates()}"
+                              th:if="${i.count >1}"
+                              th:utext="${',' + s.skill.name}"></span>
+                        </div>
+                        <div class="d-flex flex-row align-items-center mt-4">   
+                            <label class="w-25 h5 m-0">Recruiter</label>
+                            <span class="w-75 d-inline-block m-0" th:utext=" ${candidate.getRecruiter().getFullName()}"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 me-3">
+                        <div class="d-flex flex-row align-items-center mt-4">
+                            <label class="w-25 h5 m-0">Status</label>
+                            <span class="w-75 d-inline-block m-0" th:utext=" ${candidate.getStatus()}"></span>
+                        </div>
+                        <div class="d-flex flex-row align-items-center mt-4">
+                            <label class="w-25 h5 m-0">Year of experience</label>
+                            <span class="w-75 d-inline-block m-0" th:utext="${candidate.getYearOfExperience()}"></span>
+                        </div>
+                        <div class="d-flex flex-row align-items-center mt-4">
+                            <label class="w-25 h5 m-0">Highest level</label>
+                            <span class="w-75 d-inline-block m-0" th:utext="${candidate.getHighestLevel.name}"></span>
+                        </div>
+                        <div class="d-flex flex-row align-items-center mt-4">
+                            <label class="w-25 h5 m-0">Note</label>
+                            <span class="w-75 d-inline-block m-0" th:utext="${candidate.getNote()}"></span>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        <div class="d-flex justify-content-center my-4">
+            <a th:href="@{/candidate/edit/{id}(id=${candidate.id})}" type="button" class="btn btn-secondary me-5 " style="min-width: 80px">Edit</a>
+            <a type="button" th:href="@{/candidate}" style="min-width: 80px" class="btn btn-secondary">Cancel
+            </a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

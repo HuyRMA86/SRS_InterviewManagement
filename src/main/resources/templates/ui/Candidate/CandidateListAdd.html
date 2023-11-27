@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/navbar}"
+>
+<head>
+    <link th:href="@{/css/choices.css}" rel="stylesheet">
+    <script th:src="@{/js/choices.js}"></script>
+    <title></title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <nav aria-label="breadcrumb" class="my-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item h3 me-2">
+                <a th:href="@{/candidate}"
+                   class="text-decoration-none border-bottom border-2 border-dark text-dark">
+                    Candidate List
+                </a>
+            </li>
+            <li class="breadcrumb-item text-primary h3 " aria-current="page">
+                <span class="border-bottom border-2 border-primary">
+                    Create Candidate
+                </span>
+            </li>
+        </ol>
+    </nav>
+    <div class="bg-body-secondary p-3 shadow rounded">
+        <span th:utext="${message}"></span>
+        <form th:action="@{/candidate/create}" th:object="${candidateRequest}" method="post" enctype="multipart/form-data">
+            <h3>I. Personal information</h3>
+            <div class="d-flex flex-lg-row flex-column ms-5">
+                <div class="col-12 col-lg-6 me-3">
+                    <label for="fullName" class="w-25 h5">Full name<span class="text-danger">*</span></label>
+                    <input type="text" id="fullName" name="fullName"
+                           class="w-50 my-3 p-1 border border-dark rounded" required
+                           placeholder="Enter name"/>
+                    <p th:if="${#fields.hasErrors('fullName')}" class="text-danger text-center"
+                       th:errors="*{fullName}"></p>
+                    <label for="dob" class="w-25 h5">D.O.B<span class="text-danger">*</span></label>
+                    <input type="date" id="dob" name="dob" required
+                           class="w-50 my-3 p-1 border border-dark rounded"/>
+                    <p th:if="${#fields.hasErrors('dob')}" class="text-danger text-center"
+                       th:errors="*{dob}"></p>
+                    <label for="phoneNumber" class="w-25 h5">Phone number<span class="text-danger">*</span></label>
+                    <input type="text" id="phoneNumber" name="phoneNumber"
+                           class="w-50 my-3 p-1 border border-dark rounded" required
+                           placeholder="Enter phone number"/>
+                    <p th:if="${#fields.hasErrors('phoneNumber')}" class="text-danger text-center"
+                       th:errors="*{phoneNumber}"></p>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <label for="email" class="w-25 h5">Email<span class="text-danger">*</span></label>
+                    <input type="email" id="email" name="email"
+                           class="w-50 my-3 p-1 border border-dark rounded" required
+                           placeholder="Enter email"/>
+                    <p th:if="${#fields.hasErrors('email')}" class="text-danger text-center"
+                       th:errors="*{email}"></p>
+                    <label for="address" class="w-25 h5">Address<span class="text-danger">*</span></label>
+                    <input type="text" id="address" name="address"
+                           class="w-50 my-3 p-1 border border-dark rounded" required
+                           placeholder="Enter address"/>
+                    <label for="gender" class="w-25 h5">Gender</label>
+                    <select name="gender" id="gender"
+                            class="w-50 my-3 p-1 border border-dark rounded">
+                        <option selected value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                    <p th:if="${#fields.hasErrors('gender')}" class="text-danger text-center"
+                       th:errors="*{gender}"></p>
+                </div>
+            </div>
+            <h3>II. Professional information</h3>
+            <div class="d-flex  flex-lg-row flex-column ms-5 ">
+                <div class="col-12 col-lg-6 me-3">
+                    <div class="d-flex align-items-center w-100">
+                        <label for="cv" class="w-25 h5 me-1">CV Attachment<span class="text-danger">*</span></label>
+                        <label for="cv" id="fileName"
+                               class="border-dark border rounded w-50 my-3 bg-white p-1 overflow-hidden">
+                            Select a file
+                            <i class="fa-solid fa-link mt-1 me-2 float-end"></i>
+                        </label>
+                        <input type="file" id="cv" name="cv" class="d-none" required/>
+                    </div>
+                    <label class="w-25 h5" for="position">Position<span class="text-danger">*</span></label>
+                    <select name="position" id="position"
+                            class="w-50 my-3 p-1 rounded border border-dark" required>
+                        <option selected>Select a position</option>
+                        <option value="BACKEND_DEVELOPER">Backend Developer</option>
+                        <option value="BUSINESS_ANALYST">Business Analyst</option>
+                        <option value="TESTER">Tester</option>
+                        <option value="HR">HR</option>
+                        <option value="PROJECT_MANAGER">Project manager</option>
+                    </select>
+                    <p th:if="${#fields.hasErrors('position')}" class="text-danger text-center"
+                       th:errors="*{position}"></p>
+                    <div class="d-flex flex-row my-3">
+                        <label class="w-25 h5 me-1" for="skills">Skill<span class="text-danger">*</span></label>
+                        <select name="skills" id="skills" class="w-50 my-3 p-1" multiple required>
+                            <option th:each="s: ${skills}"
+                                    th:value="${s.id}" th:utext="${s.name}"></option>
+                        </select>
+                    </div>
+                    <p th:if="${#fields.hasErrors('skills')}" class="text-danger text-center"
+                       th:errors="*{skills}"></p>
+                    <label class="w-25 h5" for="recruiterId">Recruiter</label>
+                    <select name="recruiterId" id="recruiterId"
+                            class="w-50 my-3 p-1 border border-dark rounded">
+                        <option selected>Select a Recruiter</option>
+                        <option th:each="r : ${recruiters}"
+                                th:value="${r.id}"
+                                th:utext="${r.fullName}"
+                                th:if="${recruiters != null && r.account.role.name() == 'ROLE_RECRUITER'}"
+                        ></option>
+                    </select>
+                    <p th:if="${#fields.hasErrors('recruiterId')}" class="text-danger text-center"
+                       th:errors="*{recruiterId}"></p>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <label class="w-25 h5">Status</label>
+                    <label class="w-50 my-3 h6">OPEN</label>
+                    <input type="hidden" name="status" value="OPEN"/>
+                    <!--                    <select name="status" id="status"-->
+                    <!--                            class="w-50 my-3 p-1 border border-dark rounded">-->
+                    <!--                        <option selected value="OPEN">Open</option>-->
+                    <!--                    </select>-->
+                    <label for="yearOfExperience" class="w-25 h5">Year of experience</label>
+                    <input type="number" id="yearOfExperience" name="yearOfExperience"
+                           class="w-50 my-3 p-1 border border-dark rounded"
+                           placeholder="Enter a number"/>
+                    <p th:if="${#fields.hasErrors('yearOfExperience')}" class="text-danger text-center"
+                       th:errors="*{yearOfExperience}"></p>
+                    <label class="w-25 h5" for="highestLevel">Highest level</label>
+                    <select name="highestLevel" id="highestLevel"
+                            class="w-50 my-3 p-1 border border-dark rounded">
+                        <option selected value="HIGH_SCHOOL">High school</option>
+                        <option value="BACHELOR_S_DEGREE">Bachelor's Degree</option>
+                        <option value="MASTER_DEGREE_PhD">Master Degree</option>
+                    </select>
+                    <p th:if="${#fields.hasErrors('highestLevel')}" class="text-danger text-center"
+                       th:errors="*{highestLevel}"></p>
+                    <label for="note" class="w-25 h5">Note</label>
+                    <input type="text" id="note" name="note"
+                           class="w-50 my-3 p-1 border overflow-hidden border-dark rounded"
+                           value="N/A"/>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center my-4">
+                <button type="submit" class="btn btn-secondary me-5" style="min-width: 80px">Submit</button>
+                <button type="button" onclick="history.back()" style="min-width: 80px" class="btn btn-secondary">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+    <script th:src="@{/js/candidate.js}"></script>
+</div>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/navbar}"
+>
+<body>
+
+<div layout:fragment="content">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item h3 me-2">
+                <a th:href="@{/interview}" class="text-decoration-none border-bottom border-2 border-primary">
+                    Interview schedule list
+                </a>
+            </li>
+            <li class="breadcrumb-item text-dark h3 " aria-current="page">
+                <span class="border-bottom border-2 border-dark">
+                   Update result
+                </span>
+            </li>
+        </ol>
+    </nav>
+    <form class="bg-body-secondary p-3 shadow rounded"
+          th:action="@{/interview/result/{id}(id=${interviewSchedule.id})}"
+          method="post"
+    >
+        <div>
+            <input type="hidden" name="interviewScheduleId" th:value="${interviewSchedule.id}">
+            <div class="d-flex  flex-lg-row flex-column ms-5 ">
+                <div class="col-12 col-lg-6 me-3">
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Schedule title</label>
+                        <span class="w-75 d-inline-block m-0"
+                              th:utext="${interviewSchedule.title}"
+                        ></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Candidate name</label>
+                        <span class="w-75 d-inline-block m-0"
+                              th:utext="${interviewSchedule.resultInterviews.candidate.fullName}"
+                        > </span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Schedule</label>
+                        <span class="w-75 d-inline-block m-0"
+                              th:utext="${interviewSchedule.schedule.toString().replace('T', ' - ')}"
+                        ></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Status</label>
+                        <span class="w-75 d-inline-block m-0"
+                              th:utext="${interviewSchedule.status.name()}"
+                        > </span>
+                    </div>
+                    <div class="d-flex align-items-start mt-4">
+                        <label for="note" class="w-25 h5 mt-3 me-1">Notes</label>
+                        <textarea type="text" id="note" name="notes" rows="3"
+                                  class="w-50 my-3 p-1 border border-dark rounded"
+                                  th:utext="${interviewSchedule.resultInterviews.note}">
+                        </textarea>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 me-3">
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Assignee</label>
+                        <span class="d-inline-block m-0"
+                              th:each=" inter,i : ${interviewSchedule.interviewer}"
+                              th:if="${i.count == 1}"
+                              th:utext="${inter.interviewer.fullName}"
+                        ></span>
+                        <span class="d-inline-block m-0"
+                              th:each=" inter,i : ${interviewSchedule.interviewer}"
+                              th:if="${i.count > 1}"
+                              th:utext="${' , ' + inter.interviewer.fullName}"
+                        ></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Location</label>
+                        <span class="w-75 d-inline-block m-0"
+                              th:utext="${interviewSchedule.location == true ? 'Offline': 'Online'}"
+                        ></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Recruiter owner</label>
+                        <span class="w-75 d-inline-block m-0"
+                              th:utext="${interviewSchedule.recruiter.fullName}"
+                        ></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label for="result" class="w-25 h5">Result</label>
+                        <select name="result" id="result" class="w-50 p-1 border border-dark rounded">
+                            <option th:selected="${interviewSchedule.resultInterviews.result.name() == 'NA'}"
+                                    value="">-- select --
+                            </option>
+                            <option th:selected="${interviewSchedule.resultInterviews.result.name() == 'PASS'}"
+                                    value="PASS">Pass
+                            </option>
+                            <option th:selected="${interviewSchedule.resultInterviews.result.name() == 'CANCEL'}"
+                                    value="CANCEL">Cancel
+                            </option>
+                            <option th:selected="${interviewSchedule.resultInterviews.result.name() == 'FAIL'}"
+                                    value="FAIL">Fail
+                            </option>
+                        </select>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Meeting</label>
+                        <span class="w-75 d-inline-block m-0"
+                              th:utext="${interviewSchedule.meeting}"
+                        ></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h5 class="text-center text-primary py-3" th:utext="${message}"></h5>
+        <div class="d-flex justify-content-center my-5 pt-5">
+            <button type="submit" class="btn btn-secondary me-5 " style="min-width: 80px">Submit</button>
+            <a th:href="@{/interview/{id}(id=${interviewSchedule.id})}"
+                    style="min-width: 80px"
+                    class="btn btn-secondary">
+                Cancel
+            </a>
+        </div>
+    </form>
+
+</div>
+
+</body>
+</html>

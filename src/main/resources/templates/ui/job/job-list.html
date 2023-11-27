@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/navbar}"
+>
+<body>
+
+<div layout:fragment="content">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item text-dark h3" aria-current="page">
+                <span class="border-bottom border-2 border-dark">
+                    Job list
+                </span>
+            </li>
+        </ol>
+    </nav>
+    <div class="d-flex justify-content-between align-items-center ">
+        <form class="col-6 d-flex flex-row" method="get" th:action="@{/job}">
+            <div class="position-relative d-flex align-items-center w-50 me-3">
+                <input placeholder="Search" name="nameSearch"
+                       class="p-2 bg-body-secondary w-100 border-0 rounded"
+                        th:value="${jobSearch.getNameSearch()}"/>
+                <button type="submit" class="position-absolute border-0 bg-body-secondary h-75" style="right: 10px">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
+            <div class="position-relative d-flex align-items-center w-5 ">
+                <select class="p-2 bg-body-secondary w-100 border-0 rounded" name="status">
+                    <option th:selected="${jobSearch.status == null}" th:value="${null}"> Status</option>
+                    <option  th:selected="${jobSearch.status != null && jobSearch.status.name() == 'OPEN'}"
+                             value="OPEN" > Open</option>
+                    <option th:selected="${jobSearch.status != null && jobSearch.status.name() == 'IN_PROGRESS'}"
+                            value="IN_PROGRESS" > In-progress</option>
+                    <option th:selected="${jobSearch.status != null && jobSearch.status.name() == 'CLOSE'}"
+                            value="CLOSE" > Close</option>
+                </select>
+            </div>
+        </form>
+
+        <div>
+            <a sec:authorize="${hasAnyRole('ROLE_RECRUITER', 'ROLE_MANAGER')}" th:onclick="'importFile()'"
+               role="button"
+               data-bs-toggle="modal"
+               data-bs-target="#importFile"
+               class="text-decoration-none text-dark me-3">
+                <i class="fa-solid fa-download h5 p-1 border border-2 border-dark rounded-circle "></i>
+            </a>
+            <a sec:authorize="${hasAnyRole('ROLE_RECRUITER', 'ROLE_MANAGER')}" th:href="@{/job/add}" class="text-decoration-none text-dark me-5">
+                <i class="fa-solid fa-plus h5 p-1 border border-2 border-dark rounded-circle "></i>
+            </a>
+        </div>
+    </div>
+
+    <p th:if="${jobSave != null and jobSave.status == 'Fail'}" th:text="${jobSave.message}" class="text-danger h5 my-3"></p>
+    <p th:if="${jobSave != null and jobSave.status == 'Success'}" th:text="${jobSave.message}" class="text-success h5 my-3"></p>
+
+    <div class="mt-3 bg-body-secondary table-responsive shadow rounded">
+        <span class="h6 m-3 py-4 text-primary" th:text="${jobs.getTotalElements() + ' Result'}"></span>
+        <table class="table table-hover table-success">
+            <thead>
+            <tr class="text-center">
+                <th>Job Title</th>
+                <th>Required Skills</th>
+                <th>Start date</th>
+                <th>End Date</th>
+                <th>Level</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="table-light text-center" th:each="job : ${jobs}">
+                <td style="min-width: 150px" th:text="${job.title}"></td>
+                <td style="min-width: 150px">
+                    <span th:each="e,i : ${job.skillJobs}" th:if="${i.count == 1}" th:text="${ e.skill.name}"></span>
+                    <span th:each="e,i : ${job.skillJobs}" th:if="${i.count > 1}" th:text="${' , ' +e.skill.name}"></span>
+                </td>
+
+                <td style="min-width: 150px" th:text="${job.startDate}"></td>
+                <td style="min-width: 150px" th:text="${job.endDate}"></td>
+                <td style="min-width: 150px" th:text="${job.level.name}"></td>
+                <td style="min-width: 150px" th:text="${job.status}"></td>
+                <td class="text-center " style="min-width: 150px">
+                    <a th:href="@{/job/detail/{id}(id=${job.id})}"
+                        class="text-decoration-none">
+                        <i class="fa-regular fa-eye"></i>
+                    </a>
+                    <a th:if="${job.status.name() != 'CLOSE'}" th:href="@{'/job/edit/' + ${job.id} + '?subModule=Job List'}"
+                       class="text-decoration-none mx-3">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </a>
+                    <span th:if="${job.status.name() == 'CLOSE'}" th:href="@{'/job/edit/' + ${job.id} + '?subModule=Job List'}"
+                       class="text-decoration-none mx-3">
+                    </span>
+                    <a th:onclick="'deleteById('+ ${job.id}+')'"
+                       role="button"
+                       data-bs-toggle="modal"
+                       data-bs-target="#deleteById"
+                       class="text-decoration-none">
+                        <i class="fa-regular fa-trash-can " id="job"></i>
+                    </a>
+                </td>
+            </tr>
+
+            <span th:if="${jobSearch.getMessage() != null}" th:utext="${jobSearch.getMessage()}"
+                  class="text-danger"></span>
+            </tbody>
+        </table>
+
+
+        <nav aria-label="Page navigation example"
+             th:if="${jobs.numberOfElements > 0}"
+             class="d-flex justify-content-center m-0 align-items-center">
+            <ul class="pagination d-flex align-items-center pt-2">
+                <li class="page-item">
+                    <a class="page-link"
+                       th:with="indexPage = ${jobSearch.getPageIndex() > 1
+                       ? jobSearch.getPageIndex() - 1 : 1 }"
+                       th:href="@{/job(pageIndex = ${indexPage},
+                       nameSearch = ${jobSearch.getNameSearch()},
+                       status = ${jobSearch.getStatus()})}"
+                    >Previous
+                    </a>
+                </li>
+
+                <li class="page-item" th:each="e : ${jobSearch.getPageNumbers()}">
+                    <a class="page-link" th:utext="${e}"
+                       th:classappend="${e == jobSearch.getPageIndex() ? 'text-danger' : ''}"
+                        th:href="@{/job(pageIndex = ${e},
+                       nameSearch = ${jobSearch.getNameSearch()},
+                       status = ${jobSearch.getStatus()})}"
+                    ></a>
+                </li>
+
+                <li class="page-item">
+                    <a class="page-link"
+                       th:with="indexPage = ${jobSearch.getPageIndex() < jobSearch.getPageNumbers().size()
+                       ? jobSearch.getPageIndex() + 1 :  jobSearch.getPageIndex()}"
+                       th:href="@{/job(pageIndex = ${indexPage},
+                       nameSearch = ${jobSearch.getNameSearch()},
+                       status = ${jobSearch.getStatus()})}"
+                    >Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+
+
+
+    <!-- Import Excel -->
+    <div class="modal fade" id="importFile" tabindex="-1" aria-labelledby="exampleModalImport" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalImport">Import file excel Job:</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-footer justify-content-center ">
+                    <form th:action="@{/job/import}" method="post" enctype="multipart/form-data">
+                        <label for="fileExcel" class="w-25 h5">File Excel: </label>
+                        <input type="file" name="fileExcel" id="fileExcel" class="w-65 my-3 p-1 border border-dark rounded">
+                        <div class="my-3 d-flex justify-content-center">
+                            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Import</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</body>
+</html>

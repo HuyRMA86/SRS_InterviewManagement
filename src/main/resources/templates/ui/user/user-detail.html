@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/navbar}"
+>
+<body>
+
+<div layout:fragment="content">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item h3 me-2">
+                <a th:href="@{/user}" class="text-decoration-none border-bottom border-2 border-primary">
+                    User List
+                </a>
+            </li>
+            <li class="breadcrumb-item text-dark h3 " aria-current="page">
+                <span class="border-bottom border-2 border-dark">
+                   User Information
+                </span>
+            </li>
+        </ol>
+    </nav>
+    <div class="bg-body-secondary p-3 shadow rounded">
+
+        <div>
+            <div class="d-flex flex-lg-row flex-column ms-5 ">
+                <div class="col-12 col-lg-6 me-3">
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-30 h5 m-0">Full name</label>
+                        <span class="w-75 d-inline-block m-0" th:text="${users.fullName}"></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-30 h5 m-0">D.O.B</label>
+                        <span class="w-75 d-inline-block m-0" th:text="${users.dob}"></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-30 h5 m-0">Phone number</label>
+                        <span class="w-75 d-inline-block m-0" th:text="${users.phoneNumber}"></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-30 h5 m-0">Role</label>
+                        <span class="w-75 d-inline-block m-0" th:text="${users.account.role.role}"></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-30 h5 m-0">Status</label>
+                        <span class="w-75 d-inline-block m-0" th:if="${users.account.status == true}" >Activated</span>
+                        <span class="w-75 d-inline-block m-0" th:if="${users.account.status == false}" >Deactivated</span>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 me-3">
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-30 h5 m-0">Email</label>
+                        <span class="w-75 d-inline-block m-0" th:text="${users.account.email}"></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-30 h5 m-0">Address</label>
+                        <span class="w-75 d-inline-block m-0" th:text="${users.address}"></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-30 h5 m-0">Gender</label>
+                        <span class="w-75 d-inline-block m-0" th:text="${users.gender.gender}"></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-30 h5 m-0">Department</label>
+                        <span class="w-75 d-inline-block m-0" th:text="${users.department.name}"></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-30 h5 m-0">Note</label>
+                        <span class="w-75 d-inline-block m-0" th:text="${users.note}"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center my-4">
+                <a th:href="@{'/user/edit/' + ${users.id} + '?subModule=User Detail'}"
+                   class="text-decoration-none">
+                    <button type="button" class="btn btn-secondary me-5 " style="min-width: 80px">Edit</button>
+                </a>
+                <button type="button" onclick="history.back()" style="min-width: 80px" class="btn btn-secondary">
+                    Cancel
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

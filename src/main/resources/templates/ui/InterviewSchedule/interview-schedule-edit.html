@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/navbar}"
+>
+<head>
+    <link th:href="@{/css/choices.css}" rel="stylesheet">
+    <script th:src="@{/js/choices.js}"></script>
+    <title></title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <nav aria-label="breadcrumb" class="my-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item h3 me-2">
+                <a th:href="@{/interview}"
+                   class="text-decoration-none border-bottom border-2 border-dark text-dark">
+                    Interview schedule list
+                </a>
+            </li>
+            <li class="breadcrumb-item text-primary h3 " aria-current="page">
+                <span class="border-bottom border-2 border-primary">
+                    Edit interview schedule
+                </span>
+            </li>
+        </ol>
+    </nav>
+    <div class="bg-body-secondary p-3 shadow rounded">
+        <form method="post" th:action="@{/interview/edit/{id}(id=${interviewSchedule.id})}" th:object="${interviewRequest}">
+            <div class="d-flex flex-lg-row flex-column ms-5">
+                <input type="hidden" id="id" name="id" th:value="${interviewSchedule.id}"/>
+                <div class="col-12 col-lg-6 me-3">
+                    <label for="title" class="w-25 h5">Schedule title</label>
+                    <input type="text" id="title" name="title"
+                           th:value="${interviewSchedule.title}"
+                           class="w-50 my-3 p-1 border border-dark rounded"
+                           placeholder="Enter schedule title"/>
+                    <p th:if="${#fields.hasErrors('title')}" class="text-danger text-center"
+                       th:errors="*{title}"></p>
+                    <label class="w-25 h5">Candidate name</label>
+                    <label class="w-50 d-inline-block p-1 my-3 h5"
+                           th:utext="${interviewSchedule.resultInterviews.candidate.fullName}"> </label>
+                    <input type="hidden" id="candidateId" name="candidateId"
+                           th:value="${interviewSchedule.resultInterviews.candidate.id}"
+                    />
+                    <label for="schedule" class="w-25 h5">Schedule</label>
+                    <input type="datetime-local" id="schedule" name="schedule"
+                           th:value="${interviewSchedule.schedule}"
+                           class="w-50 my-3 p-1 border border-dark rounded"/>
+                    <p th:if="${#fields.hasErrors('schedule')}" class="text-danger text-center"
+                       th:errors="*{schedule}"></p>
+                    <div class="d-flex align-items-start">
+                        <label for="note" class="w-25 h5 mt-3 me-1">Notes</label>
+                        <textarea type="text" id="note" name="note" rows="3"
+                                  class="w-50 my-3 p-1 border border-dark rounded"
+                                  th:utext="${interviewSchedule.resultInterviews.note}">
+                        </textarea>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div class="d-flex flex-row my-3">
+                        <label class="w-25 h5 me-1" for="interviewId">Assignee</label>
+                        <select name="interviewId" id="interviewId" class="w-50 my-3 p-1" multiple>
+                            <option th:each="u : ${users}"
+                                    th:value="${u.id}"
+                                    th:selected="${ids.containsAll(u.id)}"
+                                    th:if="${u.account.role.name() == 'ROLE_INTERVIEW'}"
+                                    th:utext="${u.fullName}"></option>
+                        </select>
+                    </div>
+                    <p th:if="${#fields.hasErrors('interviewId')}" class="text-danger text-center"
+                       th:errors="*{interviewId}"></p>
+                    <label for="location" class="w-25 h5">Location</label>
+                    <label for="location">Online</label>
+                    <input type="checkbox" id="location" th:checked="${interviewSchedule.location}" name="location"
+                           class="my-3 ms-2 border border-dark rounded"/>
+                    <br/>
+                    <label for="recruiterId" class="w-25 h5">Recruiter owner</label>
+                    <select name="recruiterId" id="recruiterId"
+                            class="w-50 my-3 p-1 border border-dark rounded">
+                        <option th:each="u : ${users}"
+                                th:value="${u.id}"
+                                th:selected="${u.id == interviewSchedule.recruiter.id}"
+                                th:if="${u.account.role.name() == 'ROLE_RECRUITER'}"
+                                th:utext="${u.fullName}"></option>
+                    </select>
+                    <p th:if="${#fields.hasErrors('recruiterId')}" class="text-danger text-center"
+                       th:errors="*{recruiterId}"></p>
+                    <div class="d-flex flex-row align-items-center">
+                        <label for="status" class="w-25 h5 me-1">Status</label>
+                        <select name="status" id="status"
+                                class="w-50 my-3 p-1 border border-dark rounded">
+                            <option th:value="${interviewSchedule.status}" th:utext="${interviewSchedule.status}"></option>
+                            <option th:if="${interviewSchedule.status.name() != 'OPEN'}" value="OPEN">OPEN</option>
+                        </select>
+                    </div>
+                    <p th:if="${#fields.hasErrors('status')}" class="text-danger text-center"
+                       th:errors="*{status}"></p>
+                    <label for="meeting" class="w-25 h5">Meeting</label>
+                    <input type="text" id="meeting" name="meeting"
+                           th:value="${interviewSchedule.meeting}"
+                           class="w-50 my-3 p-1 border border-dark rounded"
+                           placeholder="Enter address"/>
+                    <p th:if="${#fields.hasErrors('meeting')}" class="text-danger text-center"
+                       th:errors="*{meeting}"></p>
+                </div>
+            </div>
+            <h6 th:utext="${message}" class="text-primary text-center"></h6>
+            <div class="d-flex justify-content-center my-4">
+                <button type="submit" class="btn btn-secondary me-5" style="min-width: 80px">Submit</button>
+                <button type="button" onclick="history.back()" style="min-width: 80px" class="btn btn-secondary">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+    <script th:src="@{/js/interview.js}"></script>
+</div>
+</body>
+</html>

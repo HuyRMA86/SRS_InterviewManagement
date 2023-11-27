@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/navbar}"
+>
+<head>
+    <link th:href="@{/css/choices.css}" rel="stylesheet">
+    <script th:src="@{/js/choices.js}"></script>
+    <title></title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <nav aria-label="breadcrumb" class="my-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item h3 me-2">
+                <a th:href="@{/job}"
+                   class="text-decoration-none border-bottom border-2 border-dark text-dark">
+                    Job List
+                </a>
+            </li>
+            <li class="breadcrumb-item text-primary h3 " aria-current="page">
+                <span class="border-bottom border-2 border-primary">
+                    Create Job
+                </span>
+            </li>
+        </ol>
+    </nav>
+
+    <span th:if="${jobSave != null and jobSave.status == 'Fail'}" th:text="${jobSave.message}" class="text-danger h5"></span>
+    <span th:if="${jobSave != null and jobSave.status == 'Success'}" th:text="${jobSave.message}" class="text-success h5"></span>
+
+    <div th:if="${jobSaves != null}">
+        <ul>
+            <li th:each="jobSave : ${jobSaves}" th:if="${jobSave.status == 'false'}">
+                <span th:text="${jobSave.message}" class="text-danger h6"></span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="bg-body-secondary p-3 shadow rounded">
+        <form th:action="@{/job/add}" method="post" th:object="${jobRequest}">
+            <div class="d-flex flex-lg-row flex-column ms-5">
+                <div class="col-12 col-lg-6 me-3">
+                    <div class="d-flex align-items-center">
+                        <label for="jobTitle" class="w-30 h5 ">Job Title <span class="text-danger">*</span></label>
+                        <input type="text" id="jobTitle" name="title"
+                               class="w-50 my-3 p-1 border border-dark rounded"
+                               placeholder="Enter title job..." />
+                    </div>
+                    <p th:if="${#fields.hasErrors('title')}" class="text-danger text-center mt-2- " th:errors="*{title}"></p>
+                    <div class="d-flex align-items-center">
+                        <label for="startDate" class="w-30 h5">Start Date <span class="text-danger">*</span></label>
+                        <input type="date" id="startDate" name="startDate"
+                               class="w-50 my-3 p-1 border border-dark rounded"/>
+                    </div>
+                    <p th:if="${#fields.hasErrors('startDate')}" class="text-danger text-center mt-2-" th:errors="*{startDate}"></p>
+
+                    <div class="d-flex align-items-center">
+                        <span class="w-30 h5">Salary</span>
+                        <div class="w-50 my-3 p-1 d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-start align-items-center">
+                                <label for="salaryFrom" class="h7 me-1">From</label>
+                                <input type="number" name="salaryFrom" id="salaryFrom" placeholder="Select range" class="w-80 border border-dark rounded" style="font-size: 13px">
+                            </div>
+                            <div class="d-flex justify-content-end align-items-center">
+                                <label for="salaryTo" class="h7 ms-3 me-1">To</label>
+                                <input type="number" name="salaryTo" id="salaryTo" placeholder="Select range" class="w-80 border border-dark rounded" style="font-size: 13px">
+                            </div>
+                        </div>
+                    </div>
+                    <p th:if="${#fields.hasErrors('salaryFrom')}" class="text-danger text-center mt-2- mb-0" th:errors="*{salaryFrom}"></p> </br>
+                    <p th:if="${#fields.hasErrors('salaryTo')}" class="text-danger text-center mt-5- " th:errors="*{salaryTo}"></p>
+
+                    <div class="d-flex align-items-center">
+                        <label for="workingAddress" class="w-30 h5">Working Address</label>
+                        <input type="text" id="workingAddress" name="workingAddress"
+                               class="w-50 my-3 p-1 border border-dark rounded"
+                               placeholder="Enter name"/>
+                    </div>
+                    <p th:if="${#fields.hasErrors('workingAddress')}" class="text-danger text-center mt-2-" th:errors="*{workingAddress}"></p>
+
+                    <div class="d-flex align-items-start">
+                        <label for="description" class="w-30 h5 my-3">Description</label>
+                        <textarea id="description" name="description" rows="4"
+                                  class="w-50 my-3 p-1 border border-dark rounded"
+                                  placeholder="Type decription..."></textarea>
+                    </div>
+                    <p th:if="${#fields.hasErrors('description')}" class="text-danger text-center mt-2-" th:errors="*{description}"></p>
+                </div>
+                <div class="col-12 col-lg-6 me-3">
+                    <div class="d-flex align-items-center my-3">
+                        <label class="w-30 h5" for="skills">Skills <span class="text-danger">*</span></label>
+                        <select name="skills" id="skills" class="w-50 my-3 p-1 border border-dark rounded" th:placeholder="Skills" multiple >
+                            <option th:each="skill: ${skills}" th:value="${skill.id}" th:text="${skill.name}"></option>
+                        </select>
+                    </div>
+                    <p th:if="${#fields.hasErrors('skills')}" class="text-danger text-center mt-2-" th:errors="*{skills}"></p>
+
+                    <div class="d-flex align-items-center">
+                        <label for="endDate" class="w-30 h5">End Date <span class="text-danger">*</span></label>
+                        <input type="date" id="endDate" name="endDate"
+                               class="w-50 my-3 p-1 border border-dark rounded"/>
+                    </div>
+                    <p th:if="${#fields.hasErrors('endDate')}" class="text-danger text-center mb-4-5 mt-2-" th:errors="*{endDate}"></p>
+
+                    <div class="d-flex align-items-center my-3">
+                        <label class="w-30 h5" for="benefits">Benefits <span class="text-danger">*</span></label>
+                        <select name="benefits" id="benefits" class="w-50 my-3 p-1 border border-dark rounded" th:placeholder="Benifits" multiple>
+                            <option th:each="benefit: ${benefits}" th:value="${benefit.id}" th:text="${benefit.name}"></option>
+                        </select>
+                    </div>
+                    <p th:if="${#fields.hasErrors('benefits')}" class="text-danger text-center mt-2-" th:errors="*{benefits}"></p>
+
+                    <div class="d-flex align-items-center">
+                        <label for="level" class="w-30 h5">Level <span class="text-danger">*</span></label>
+                        <select name="level" id="level"
+                                class="w-50 my-3 p-1 border border-dark rounded" >
+                            <option value="">Level</option>
+                            <option th:each="level: ${levels}" th:value="${level.id}" th:text="${level.name}"></option>
+                        </select>
+                    </div>
+                    <p th:if="${#fields.hasErrors('level')}" class="text-danger text-center mt-2-" th:errors="*{level}"></p>
+
+                    <div class="d-flex align-items-center">
+                        <label class="w-30 h5">Status</label>
+                        <label class="w-50 my-3 h6">OPEN</label>
+                        <input type="hidden" name="status" value="OPEN"/>
+                    </div>
+
+                </div>
+            </div>
+            <div class="d-flex justify-content-center my-4">
+                <button type="submit" class="btn btn-secondary me-5" style="min-width: 80px">Submit</button>
+                <button type="button" onclick="history.back()" style="min-width: 80px" class="btn btn-secondary">Cancel</button>
+            </div>
+        </form>
+    </div>
+    <script th:src="@{/js/job.js}"></script>
+</div>
+</body>
+</html>

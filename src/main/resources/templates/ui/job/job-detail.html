@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/navbar}"
+>
+<body>
+
+<div layout:fragment="content">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item h3 me-2">
+                <a th:href="@{/candidate}" class="text-decoration-none border-bottom border-2 border-primary">
+                    Job List
+                </a>
+            </li>
+            <li class="breadcrumb-item text-dark h3 " aria-current="page">
+                <span class="border-bottom border-2 border-dark">
+                   Job Detail
+                </span>
+            </li>
+        </ol>
+    </nav>
+    <div class="bg-body-secondary p-3 shadow rounded">
+
+        <div class="d-flex  flex-lg-row flex-column ms-5 ">
+            <div class="col-12 col-lg-6 me-3">
+                <div class="d-flex flex-row align-items-center mt-4">
+                    <label class="w-30 h5 m-0">Job title</label>
+                    <span class="w-75 d-inline-block m-0" th:text="${job.title}"></span>
+                </div>
+                <div class="d-flex flex-row align-items-center mt-4">
+                    <label class="w-30 h5 m-0">Start date</label>
+                    <span class="w-75 d-inline-block m-0" th:text="${job.startDate}"></span>
+                </div>
+                <div class="d-flex flex-row align-items-center mt-4">
+                    <label class="w-30 h5">Salary range</label>
+                    <div class="w-50 p-1 d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <label class="h7 me-2">From</label>
+                            <span class="w-75 d-inline-block m-0" th:text="${job.salaryFrom}"></span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <label class="h7 ms-2 me-2">To</label>
+                            <span class="w-75 d-inline-block m-0" th:text="${job.salaryTo}"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-row align-items-center mt-4">
+                    <label class="w-30 h5 m-0">Working address</label>
+                    <span class="w-75 d-inline-block m-0" th:text="${job.workingAddress}"></span>
+                </div>
+                <div class="d-flex flex-row align-items-center mt-4">
+                    <label class="w-30 h5 m-0">Description</label>
+                    <span class="w-75 d-inline-block m-0" th:text="${job.description}"></span>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 me-3">
+                <div class="d-flex flex-row align-items-center mt-4">
+                    <label class="w-30 h5 m-0">Skills</label>
+                    <div class="d-flex justify-content-start align-items-center">
+                        <span class="m-0" th:each="e,i : ${job.skillJobs}" th:if="${i.count == 1}" th:text="${ e.skill.name}"></span>
+                        <span class=" m-0" th:each="e,i : ${job.skillJobs}" th:if="${i.count > 1}" th:text="${' , ' +e.skill.name}"></span>
+                    </div>
+                </div>
+                <div class="d-flex flex-row align-items-center mt-4">
+                    <label class="w-30 h5 m-0">End date</label>
+                    <span class="w-75 d-inline-block m-0" th:text="${job.endDate}"></span>
+                </div>
+                <div class="d-flex flex-row align-items-center mt-4">
+                    <label class="w-30 h5 m-0">Level</label>
+                    <span class="w-75 d-inline-block m-0" th:text="${job.level.name}"></span>
+                </div>
+                <div class="d-flex flex-row align-items-center mt-4">
+                    <label class="w-30 h5 m-0">Benefits</label>
+                    <div class="w-75 d-flex justify-content-start align-items-center flex-wrap">
+                        <span class="m-0" th:each="e,i : ${job.benefitsJobs}" th:if="${i.count == 1}" th:text="${ e.benefits.name}"></span>
+                        <span class="m-0" th:each="e,i : ${job.benefitsJobs}" th:if="${i.count > 1}" th:text="${' , ' +e.benefits.name}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center my-4">
+            <a th:if="${job.status.name() != 'CLOSE'}" th:href="@{'/job/edit/' + ${job.id} + '?subModule=Job Detail'}"
+               class="text-decoration-none">
+                <button type="button" class="btn btn-secondary me-5 " style="min-width: 80px">Edit</button>
+            </a>
+            <button type="button" onclick="history.back()" style="min-width: 80px" class="btn btn-secondary">Cancel</button>
+        </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

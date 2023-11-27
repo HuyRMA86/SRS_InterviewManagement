@@ -1,0 +1,22 @@
+package fa.training.interviewmanagement.enums;
+
+public enum EStatus {
+    OPEN,
+    CLOSE,
+    IN_PROGRESS,
+    FAIL,
+    PASS,
+    CANCEL,
+    BANNED,
+    WAITING_FOR_INTERVIEW,
+    CANCELED_INTERVIEW,
+    PASSED_INTERVIEW,
+    FAILED_INTERVIEW,
+    WAITING_FOR_APPROVAL,
+    APPROVED_OFFER,
+    REJECTED_OFFER,
+    WAITING_FOR_RESPONSE,
+    ACCEPTED_OFFER,
+    DECLINED_OFFER,
+    CANCELED_OFFER
+}

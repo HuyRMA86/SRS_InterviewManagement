@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/navbar}"
+>
+<head>
+    <link th:href="@{/css/choices.css}" rel="stylesheet">
+    <script th:src="@{/js/choices.js}"></script>
+    <title></title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <nav aria-label="breadcrumb" class="my-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item h3 me-2">
+                <a th:href="@{/interview}"
+                   class="text-decoration-none border-bottom border-2 border-dark text-dark">
+                    Offer list
+                </a>
+            </li>
+            <li class="breadcrumb-item text-primary h3 " aria-current="page">
+                <span class="border-bottom border-2 border-primary">
+                    Approve offer detail
+                </span>
+            </li>
+        </ol>
+    </nav>
+    <div class="bg-body-secondary p-3 shadow rounded">
+        <form method="post">
+            <div class="d-flex flex-lg-row flex-column ms-5">
+                <div class="col-12 col-lg-6 me-3">
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Candidate name</label>
+                        <span class="w-75 d-inline-block m-0" th:utext="${offer.resultInterview.candidate.fullName}"> </span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Position</label>
+                        <span class="w-75 d-inline-block m-0" th:utext="${offer.position}"></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Approved by</label>
+                        <span class="w-75 d-inline-block m-0" th:utext="${offer.manager.fullName}"></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Status</label>
+                        <span class="w-75 d-inline-block m-0" th:utext="${offer.status}"></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Interviewer</label>
+                        <span class="w-75 d-inline-block m-0" th:each="i : ${interviewer}" th:utext="${i.interviewer.fullName}"></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Contract start</label>
+                        <label class="me-3 my-0">From</label>
+                        <span class="w-25 d-inline-block m-0" th:utext="${offer.createDate}"></span>
+                        <label class="me-3 my-0">To</label>
+                        <span class="w-25 d-inline-block m-0"></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Notes</label>
+                        <span class="w-75 d-inline-block m-0"> HAhah</span>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Contract type</label>
+                        <span class="w-75 d-inline-block m-0"> HAhah</span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Level</label>
+                        <span class="w-75 d-inline-block m-0" th:utext="${offer.level.name}"></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Department</label>
+                        <span class="w-75 d-inline-block m-0" th:utext="${offer.department.name}"></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Recruiter owner</label>
+                        <span class="w-75 d-inline-block m-0" th:utext="${offer.recruiter.fullName}"></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Due date</label>
+                        <span class="w-75 d-inline-block m-0" th:utext="${offer.dueDate}"></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Basic salary</label>
+                        <span class="w-75 d-inline-block m-0" th:utext="${offer.basicSalary}"></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Approved notes</label>
+                        <textarea type="text" id="notes" name="notes" rows="3"
+                                  class="w-50 my-3 p-1 border border-dark rounded"
+                                  th:utext="${'N/A'}">
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center my-4">
+                <button type="button" th:onclick="'approveStatus('+${offer.id}+')'" class="btn btn-secondary me-5" style="min-width: 80px">Submit</button>
+                <button type="button" th:onclick="'rejectStatus('+${offer.id}+')'" style="min-width: 80px; margin-right: 50px" class="btn btn-secondary">
+                    Reject
+                </button>
+                <button type="button" onclick="history.back()" style="min-width: 80px" class="btn btn-secondary">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+    <script th:src="@{/js/interview.js}"></script>
+    <script>
+        function approveStatus(id){
+            let notes = $("#notes").val();
+            $.get(
+                "/offer/approve/accepted/"+id + "?notes=" + notes
+            ).done(function (){
+                window.location.href = "/offer/"+ id
+            })
+        }
+
+        function rejectStatus(id){
+            let notes = $("#notes").val();
+            $.get(
+                "/offer/approve/rejected/"+id + "?notes=" + notes
+            ).done(function (){
+                window.location.href = "/offer/"+ id
+            })
+        }
+    </script>
+</div>
+</body>
+</html>

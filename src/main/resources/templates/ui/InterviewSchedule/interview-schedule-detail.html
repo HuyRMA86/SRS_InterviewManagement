@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/navbar}"
+>
+<body>
+
+<div layout:fragment="content">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item h3 me-2">
+                <a th:href="@{/interview}" class="text-decoration-none border-bottom border-2 border-primary">
+                    Interview schedule list
+                </a>
+            </li>
+            <li class="breadcrumb-item text-dark h3 " aria-current="page">
+                <span class="border-bottom border-2 border-dark">
+                   Interview schedule Information
+                </span>
+            </li>
+        </ol>
+    </nav>
+    <div class="bg-body-secondary p-3 shadow rounded">
+        <div>
+            <div class="d-flex  flex-lg-row flex-column ms-5 ">
+                <div class="col-12 col-lg-6 me-3">
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Schedule title</label>
+                        <span class="w-75 d-inline-block m-0"
+                              th:utext="${interviewSchedule.title}"
+                        ></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Candidate name</label>
+                        <span class="w-75 d-inline-block m-0"
+                              th:utext="${interviewSchedule.resultInterviews.candidate.fullName}"
+                        > </span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Schedule</label>
+                        <span class="w-75 d-inline-block m-0"
+                              th:utext="${interviewSchedule.schedule.toString().replace('T', ' - ')}"
+                        ></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Status</label>
+                        <span class="w-75 d-inline-block m-0"
+                              th:utext="${interviewSchedule.status.name()}"
+                        > </span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Note</label>
+                        <span class="w-75 d-inline-block m-0"
+                              th:utext="${interviewSchedule.resultInterviews.note}"
+                        ></span>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 me-3">
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Assignee</label>
+                        <span class="d-inline-block m-0"
+                              th:each=" inter,i : ${interviewSchedule.interviewer}"
+                              th:if="${i.count == 1}"
+                              th:utext="${inter.interviewer.fullName}"
+                        ></span>
+                        <span class="d-inline-block m-0"
+                              th:each=" inter,i : ${interviewSchedule.interviewer}"
+                              th:if="${i.count > 1}"
+                              th:utext="${' , ' + inter.interviewer.fullName}"
+                        ></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Location</label>
+                        <span class="w-75 d-inline-block m-0"
+                              th:utext="${interviewSchedule.location == true ? 'Offline': 'Online'}"
+                        ></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Recruiter owner</label>
+                        <span class="w-75 d-inline-block m-0"
+                              th:utext="${interviewSchedule.recruiter.fullName}"
+                        ></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Result</label>
+                        <span class="w-75 d-inline-block m-0"
+                              th:utext="${interviewSchedule.resultInterviews.result}"
+                        ></span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center mt-4">
+                        <label class="w-25 h5 m-0">Meeting</label>
+                        <span class="w-75 d-inline-block m-0"
+                              th:utext="${interviewSchedule.meeting}"
+                        ></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center my-5 pt-5">
+            <a th:href="@{/interview/edit/{id}(id=${interviewSchedule.id})}"
+               class="btn btn-secondary me-5 "
+               style="min-width: 80px">
+                Edit
+            </a>
+            <a th:href="@{/interview/result/{id}(id=${interviewSchedule.id})}"
+               class="btn btn-secondary me-5 "
+               style="min-width: 80px">
+                Result
+            </a>
+            <button type="button" onclick="history.back()" style="min-width: 80px" class="btn btn-secondary">Cancel
+            </button>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

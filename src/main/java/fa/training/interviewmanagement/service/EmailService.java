@@ -1,0 +1,22 @@
+package fa.training.interviewmanagement.service;
+
+import fa.training.interviewmanagement.entities.*;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+
+import java.util.Collection;
+import java.util.List;
+
+public interface EmailService {
+    void sendMailSimple(EmailDetail emailDetail) throws MessagingException;
+    void sendMailHtml(EmailDetail emailDetail   ) throws MessagingException;
+    void sendMailInterviewScheduleToCandidate(ResultInterview resultInterview) throws MessagingException;
+    void sendMailToUser(Account account) throws MessagingException;
+    void sendMailCancelInterviewScheduleToCandidate(ResultInterview resultInterview) throws MessagingException;
+    void sendMailUpdateInterviewScheduleToCandidate(ResultInterview resultInterview) throws MessagingException;
+    void sendMailResultToCandidate(ResultInterview resultInterview) throws MessagingException;
+    void sendMailInterviewScheduleToInterviewer(Collection<InterviewerSchedule> interviewerSchedules) throws MessagingException;
+    void sendMailCancelInterviewScheduleToInterviewer(Collection<InterviewerSchedule> interviewerSchedules) throws MessagingException;
+    void sendMailUpdateInterviewScheduleToInterviewer(Collection<InterviewerSchedule> interviewerSchedules) throws MessagingException;
+    void sendMailUpdateInterviewScheduleToInterviewer(Collection<Users> users,InterviewSchedule interviewSchedule) throws MessagingException;
+}

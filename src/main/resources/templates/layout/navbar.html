@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+<head>
+    <th:block th:replace="~{layout/fragment::head}">
+    </th:block>
+    <title></title>
+</head>
+<body>
+<!--code navbar o day nhe-->
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-1 col-md-2 sticky-top " style="background-color: #b5bbc1; height: 100vh">
+            <div>
+                <a th:href="@{/}"
+                   class="d-flex align-items-center justify-content-center py-4 text-dark text-decoration-none navbar-a">
+                    <i class="fa-brands fa-dev fs-1 fs-2"></i>
+                    <span class="h2 fs-1 d-none ms-3 d-md-inline-block">IMS</span>
+                </a>
+                <a th:href="@{/home}"
+                   th:classappend="${#ctx.session.title == 'HOME' ? 'text-primary' : 'text-dark'}"
+                   class="d-flex flex-column align-items-center py-4 text-decoration-none navbar-a">
+                    <i class="fa-solid fa-house mb-2 fs-1 fs-2"></i>
+                    <span class="h6 d-none d-md-inline-block">HOME</span>
+                </a>
+                <a th:href="@{/candidate}"
+                   th:classappend="${#ctx.session.title == 'CANDIDATE' ? 'text-primary' : 'text-dark'}"
+                   class="d-flex flex-column align-items-center py-4
+                        list-group-item text-decoration-none navbar-a">
+                    <i class="fa-solid fa-people-group mb-2 fs-1 fs-2"></i>
+                    <span class="h6 d-none d-md-inline-block">CANDIDATE</span>
+                </a>
+                <a th:href="@{/job}"
+                   th:classappend="${#ctx.session.title == 'JOB' ? 'text-primary' : 'text-dark'}"
+                   class="d-flex flex-column align-items-center py-4 text-decoration-none navbar-a">
+                    <i class="fa-solid fa-briefcase mb-2 fs-1 fs-2"></i>
+                    <span class="h6 d-none d-md-inline-block">JOB</span>
+                </a>
+                <a th:href="@{/interview}"
+                   th:classappend="${#ctx.session.title == 'INTERVIEW SCHEDULE' ? 'text-primary' : 'text-dark'}"
+                   class="d-flex flex-column align-items-center py-4 text-decoration-none navbar-a">
+                    <i class="fa-regular fa-comments mb-2 fs-1 fs-2"></i>
+                    <span class="h6 d-none d-md-inline-block">INTERVIEW</span>
+                </a>
+                <a th:href="@{/offer}"
+                   th:classappend="${#ctx.session.title == 'OFFER' ? 'text-primary' : 'text-dark'}"
+                   class="d-flex flex-column align-items-center py-4 text-decoration-none navbar-a">
+                    <i class="fa-regular fa-file-lines mb-2 fs-1 fs-2"></i>
+                    <span class="h6 d-none d-md-inline-block">OFFER</span>
+                </a>
+            </div>
+        </div>
+        <!--    nav-header -->
+        <div class="col-11 col-md-10">
+            <div class=" d-flex justify-content-between align-items-center sticky-top shadow-custom rounded-bottom"
+                 style="height: 100px; background-color: #ced4da">
+                <div class="header-tittle p-3">
+                    <h1 class="m-0" th:utext="${#ctx.session.title}"></h1>
+                </div>
+                <div class="header-profile-icon d-flex align-items-center me-2">
+                    <div class="text-start me-2">
+                        <h6 th:if="${#ctx.session.user != null  }" th:utext="${#ctx.session.user.fullName}"></h6>
+                        <span th:if="${#ctx.session.user != null }" th:utext="${#ctx.session.user.department.name}"></span>
+                    </div>
+                    <a href="#" role="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" class="text-dark">
+                        <i class="fa-regular fa-user rounded-circle border-2 p-1 border-dark"
+                           style="font-size: 30px"></i>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" sec:authorize="${hasRole('ROLE_ADMIN')}" th:href="@{/user}">User management</a></li>
+                        <li><a class="dropdown-item" href="#">My account</a></li>
+                        <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-5" layout:fragment="content"></div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="deleteById" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Bạn có muốn xóa dữ liệu này không?</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-footer add_url">
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function getCandidate(e) {
+        console.log($("#formSearch").serialize());
+    }
+    function deleteById(id) {
+        let url = "/" + event.target.getAttribute("id") + "/delete/" + id ;
+        console.log(url);
+        addUrl.empty();
+        addUrl.append(`
+             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a href="${url}" class="btn btn-primary">Delete</a>`)
+    }
+    let addUrl = $(".add_url");
+</script>
+</body>
+</html>

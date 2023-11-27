@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/navbar}"
+>
+<head>
+    <link th:href="@{/css/choices.css}" rel="stylesheet">
+    <script th:src="@{/js/choices.js}"></script>
+    <title></title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <nav aria-label="breadcrumb" class="my-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item h3 me-2">
+                <a th:href="@{/interview}"
+                   class="text-decoration-none border-bottom border-2 border-dark text-dark">
+                    Offer list
+                </a>
+            </li>
+            <li class="breadcrumb-item text-primary h3 " aria-current="page">
+                <span class="border-bottom border-2 border-primary">
+                    Edit offer
+                </span>
+            </li>
+        </ol>
+    </nav>
+    <div class="bg-body-secondary p-3 shadow rounded">
+        <span th:utext="${message}" class="text-center"> </span>
+        <form method="post" th:action="@{/offer/edit/{id}(id=${offer.id})}">
+            <div class="d-flex flex-lg-row flex-column ms-5">
+                <div class="col-12 col-lg-6 me-3">
+                    <div class="d-flex flex-row align-items-center my-3">
+                        <label for="candidateId" class="w-25 h5">Candidate</label>
+                        <span class="w-75 d-inline-block my-0 ms-1" id="candidateId"
+                              th:utext="${offer.resultInterview.candidate.fullName}"> WAITING FOR APPROVAL</span>
+                    </div>
+                    <label for="position" class="w-25 h5">Position</label>
+                    <select name="position" id="position"
+                            class="w-50 my-3 p-1 border border-dark rounded">
+                        <option value="">-- Select position --</option>
+                        <option th:selected="${offer.position.name() == 'BACKEND_DEVELOPER'}" value="BACKEND_DEVELOPER">Backend Developer</option>
+                        <option th:selected="${offer.position.name() == 'BUSINESS_ANALYST'}" value="BUSINESS_ANALYST">Business Analyst</option>
+                        <option th:selected="${offer.position.name() == 'TESTER'}" value="TESTER">Tester</option>
+                        <option th:selected="${offer.position.name() == 'HR'}" value="HR">HR</option>
+                        <option th:selected="${offer.position.name() == 'PROJECT_MANAGER'}" value="PROJECT_MANAGER">Project manager</option>
+                    </select>
+                    <label for="approvedBy" class="w-25 h5">Approved by</label>
+                    <select name="approvedBy" id="approvedBy"
+                            class="w-50 my-3 p-1 border border-dark rounded">
+                        <option th:selected="${offer.manager.id == u.id}"
+                                th:each="u:${users}"
+                                th:utext="${u.fullName}"
+                                th:if="${u.account.role.name() == 'ROLE_MANAGER'}"
+                                th:value="${u.id}"></option>
+
+                    </select>
+                    <div class="d-flex flex-row align-items-center mt-3 mb-4">
+                        <label class="w-25 h5 m-0">Status</label>
+                        <span class="w-75 d-inline-block my-0 ms-1" id="status"> WAITING FOR APPROVAL</span>
+                    </div>
+                    <div class="d-flex flex-row align-items-center my-3">
+                        <label class="w-25 h5 m-0">Interviewer</label>
+                        <span class="w-75 d-inline-block my-0 ms-1" id="interviewers" th:each="p : ${interviewer}" th:utext="${p.interviewer.fullName}"></span>
+                    </div>
+                    <label for="from" class="w-25 h5">Contract start</label>
+                    <label for="from" class="">From</label>
+                    <input type="date" id="from" name="contractFrom"
+                           class="my-3 mx-2 border border-dark rounded" th:value="${offer.contractFrom}"/>
+                    <label for="from">To</label>
+                    <input type="date" id="to" name="contractTo"
+                           class="my-3 ms-2 border border-dark rounded" th:value="${offer.contractTo}"/>
+                    <div class="d-flex flex-row align-items-center my-3">
+                        <label class="w-25 h5 m-0">Interviewer notes</label>
+                        <span class="w-75 d-inline-block my-0 ms-1" id="interviewer-notes" th:utext="${offer.resultInterview.note}"></span>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <label for="contractType" class="w-25 h5">Contract type</label>
+                    <select name="contractType" id="contractType"
+                            class="w-50 my-3 p-1 border border-dark rounded">
+                        <option th:selected="${offer.contractType == 'TRAIL'}" value="TRAIL">Trail</option>
+                        <option th:selected="${offer.contractType == 'TRAINING'}" value="TRAINING">Training</option>
+                        <option th:selected="${offer.contractType == 'ONE_YEAR'}" value="ONE_YEAR">One year</option>
+                        <option th:selected="${offer.contractType == 'THREE_YEAR'}" value="THREE_YEAR">Three year</option>
+                        <option th:selected="${offer.contractType == 'UNLIMITED'}" value="UNLIMITED">Unlimited</option>
+                    </select>
+                    <label for="level" class="w-25 h5">Level</label>
+                    <select name="level" id="level"
+                            class="w-50 my-3 p-1 border border-dark rounded">
+                        <option th:selected="${offer.level.id == l.id}"
+                                th:each="l:${levels}"
+                                th:utext="${l.name}"
+                                th:value="${l.id}"
+                        ></option>
+                    </select>
+                    <label for="department" class="w-25 h5">Department</label>
+                    <select name="department" id="department"
+                            class="w-50 my-3 p-1 border border-dark rounded">
+                        <option th:selected="${offer.department.id == d.id}"
+                                th:each="d:${departments}"
+                                th:utext="${d.name}"
+                                th:value="${d.id}"
+                        ></option>
+                    </select>
+                    <label for="recruiterId" class="w-25 h5">Recruiter Owner</label>
+                    <select name="recruiterId" id="recruiterId"
+                            class="w-50 my-3 p-1 border border-dark rounded">
+                        <option th:selected="${offer.recruiter.id == u.id}"
+                                th:each="u : ${users}"
+                                th:utext="${u.fullName}"
+                                th:value="${u.id}"
+                                th:if="${u.account.role.name() == 'ROLE_RECRUITER'}"
+                        ></option>
+                    </select>
+                    <label for="dueDate" class="w-25 h5">Due date</label>
+                    <input type="date" id="dueDate" name="dueDate"
+                           class="my-3 w-50 p-1 border border-dark rounded" th:value="${offer.dueDate}"/>
+                    <label for="basicSalary" class="w-25 h5">Basic salary</label>
+                    <input type="text" id="basicSalary" name="basicSalary"
+                           class="my-3 w-50 p-1 border border-dark rounded" th:value="${offer.basicSalary}"/>
+                    <div class="d-flex align-items-start">
+                        <label for="notes" class="w-25 h5 mt-3 me-1">Notes</label>
+                        <textarea type="text" id="notes" name="notes" rows="3"
+                                  class="w-50 my-3 p-1 border border-dark rounded"
+                                  th:utext="${offer.notes}">
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center my-4">
+                <button type="submit" class="btn btn-secondary me-5" style="min-width: 80px">Submit</button>
+                <button type="button" onclick="history.back()" style="min-width: 80px" class="btn btn-secondary">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+    <script th:src="@{/js/interview.js}"></script>
+</div>
+</body>
+</html>
